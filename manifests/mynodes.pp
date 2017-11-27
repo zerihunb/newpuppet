@@ -35,6 +35,13 @@ node 'stretch' {
       repos    => 'main restricted universe multiverse ',
     }
 }
-
+ accounts::user { 'dan': 
+  ensure   => 'present',
+  uid      => '4001',
+  gid      => '4001',
+  group    => 'staff',
+  shell    => '/bin/bash',
+  password => '!!',
+  locked   => false,
+  }
 }
-
