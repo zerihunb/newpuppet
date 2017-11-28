@@ -1,6 +1,5 @@
 node 'stretch'{
-  include ::role::jupackages
-#  include ::role::databases
+  include ::role::databases
 }
 
 
