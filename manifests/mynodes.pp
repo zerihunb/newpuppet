@@ -1,6 +1,10 @@
-#### Node definition
+node 'stretch'{
+  include ::role::jupackages
+#  include ::role::databases
+}
 
-node 'stretch' {
+
+node 'stretch_old' {
   class { 'apt':
     update => {
       'frequency' => 'always',
@@ -31,10 +35,13 @@ rsync::put { '${rsyncDestHost}:/repo/foo':
 }
 
 ##### postfix
-
+# you can do like class { '::postfix':
 class { 'postfix':
   package_ensure => 'latest',
-  service_ensure => 'stopped',
+  config_file_template => "postfix/${::operatingsystem}/etc/postfix/main.cf.erb",
+  relayhost =>'smtp.ugent.be',
+  recipient =>'zerihun.befekadu@ju.edu.et',
+#  service_ensure => 'stopped',
 }
 
 #### NTP server
@@ -46,7 +53,7 @@ class { 'postfix':
 ### install vim package
 
  package { 'vim':
-   ensure => present,
+   ensure => absent,
   }
 
 #### adding puppet esource
