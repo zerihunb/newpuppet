@@ -1,8 +1,13 @@
+#### Node definition
+
 node 'stretch' {
   class { 'apt':
     update => {
       'frequency' => 'always',
     },
+
+#### remove source lists that is not manage by puppet
+
     purge  => {
       'sources.list'   => true,
       'sources.list.d' => true,
@@ -11,6 +16,40 @@ node 'stretch' {
     },
   }
 
+###### rsync packege install
+
+class { 'rsync': 
+  package_ensure => 'latest' 
+}
+rsync::get { '/foo':
+  source  => "rsync://${rsyncServer}/repo/foo/",
+#  require => File['/foo'],
+}
+rsync::put { '${rsyncDestHost}:/repo/foo':
+  user    => 'dan',
+  source  => "/repo/foo/",
+}
+
+##### postfix
+
+class { 'postfix':
+  package_ensure => 'latest',
+  service_ensure => 'stopped',
+}
+
+#### NTP server
+
+ class { 'ntp':
+    server_list => [ '0.be.pool.ntp.org', '1.be.pool.ntp.org'],
+  }
+
+### install vim package
+
+ package { 'vim':
+   ensure => present,
+  }
+
+#### adding puppet esource
   apt::source { 'puppetlabs':
     location => 'http://apt.puppetlabs.com',
     repos    => 'puppet5',
@@ -20,6 +59,8 @@ node 'stretch' {
     },
   }
 
+#### source list for debian
+
   if($facts[operatingsystem] == 'Debian') {
     apt::source { 'debian':
       ensure   => 'present',
@@ -28,6 +69,8 @@ node 'stretch' {
     }
   }
 
+#### source list for ubuntu
+
   if($facts[operatingsystem] == 'Ubuntu') {
     apt::source { 'ubuntu':
       ensure   => 'present',
@@ -35,6 +78,9 @@ node 'stretch' {
       repos    => 'main restricted universe multiverse ',
     }
 }
+
+##### managing user account
+
  accounts::user { 'dan': 
   ensure   => 'present',
   uid      => '4001',
