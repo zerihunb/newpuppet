@@ -4,4 +4,8 @@ class profile::baseline {
   package { 'vim':
     ensure =>present,
   }
+  package {'ssh':
+    ensure =>present,
+  }
+
 }
