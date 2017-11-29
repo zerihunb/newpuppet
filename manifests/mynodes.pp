@@ -1,5 +1,5 @@
 node 'stretch'{
-  include ::role::databases
+  include ::role::dbserver
 }
 
 
@@ -9,7 +9,7 @@ node 'stretch_old' {
       'frequency' => 'always',
     },
 
-#### remove source lists that is not manage by puppet
+### remove source lists that is not manage by puppet
 
     purge  => {
       'sources.list'   => true,
@@ -19,40 +19,40 @@ node 'stretch_old' {
     },
   }
 
-###### rsync packege install
+### rsync packege install
 
-class { 'rsync': 
-  package_ensure => 'latest' 
-}
-rsync::get { '/foo':
-  source  => "rsync://${rsyncServer}/repo/foo/",
-#  require => File['/foo'],
-}
-rsync::put { '${rsyncDestHost}:/repo/foo':
-  user    => 'dan',
-  source  => "/repo/foo/",
-}
+  class { 'rsync': 
+    package_ensure => 'latest' 
+  }
+  rsync::get { '/foo':
+    source  => "rsync://${rsyncServer}/repo/foo/",
+#    require => File['/foo'],
+  }
+  rsync::put { '${rsyncDestHost}:/repo/foo':
+    user    => 'dan',
+    source  => "/repo/foo/",
+  }
 
-##### postfix
+### postfix
 # you can do like class { '::postfix':
-class { 'postfix':
-  package_ensure => 'latest',
-  config_file_template => "postfix/${::operatingsystem}/etc/postfix/main.cf.erb",
-  relayhost =>'smtp.ugent.be',
-  recipient =>'zerihun.befekadu@ju.edu.et',
-#  service_ensure => 'stopped',
-}
+  class { 'postfix':
+    package_ensure => 'latest',
+    config_file_template => "postfix/${::operatingsystem}/etc/postfix/main.cf.erb",
+    relayhost =>'smtp.ugent.be',
+    recipient =>'zerihun.befekadu@ju.edu.et',
+#    service_ensure => 'stopped',
+  }
 
 #### NTP server
 
- class { 'ntp':
+  class { 'ntp':
     server_list => [ '0.be.pool.ntp.org', '1.be.pool.ntp.org'],
   }
 
 ### install vim package
 
- package { 'vim':
-   ensure => absent,
+  package { 'vim':
+    ensure => absent,
   }
 
 #### adding puppet esource
@@ -87,13 +87,13 @@ class { 'postfix':
 
 ##### managing user account
 
- accounts::user { 'dan': 
-  ensure   => 'present',
-  uid      => '4001',
-  gid      => '4001',
-  group    => 'staff',
-  shell    => '/bin/bash',
-  password => '!!',
-  locked   => false,
+  accounts::user { 'dan': 
+    ensure   => 'present',
+    uid      => '4001',
+    gid      => '4001',
+    group    => 'staff',
+    shell    => '/bin/bash',
+    password => '!!',
+    locked   => false,
   }
 }
