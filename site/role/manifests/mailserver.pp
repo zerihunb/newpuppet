@@ -1,0 +1,1 @@
+class ::role::mailserver {}
